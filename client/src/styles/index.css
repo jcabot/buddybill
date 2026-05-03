@@ -1,0 +1,115 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-brand);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  button {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: transform 0.05s ease, box-shadow 0.1s ease, background-color 0.1s ease;
+    cursor: pointer;
+  }
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-primary-fg);
+  }
+  .btn-primary:hover:not(:disabled) {
+    filter: brightness(0.95);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-text);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background-color: var(--color-border);
+  }
+  .btn-danger {
+    background-color: var(--color-danger);
+    color: white;
+  }
+  .input {
+    width: 100%;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.75rem;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  .input:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+  .label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    margin-bottom: 0.25rem;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .pill-success {
+    background-color: color-mix(in srgb, var(--color-success) 18%, transparent);
+    color: var(--color-success);
+  }
+  .pill-danger {
+    background-color: color-mix(in srgb, var(--color-danger) 18%, transparent);
+    color: var(--color-danger);
+  }
+  .pill-muted {
+    background-color: var(--color-border);
+    color: var(--color-muted);
+  }
+}

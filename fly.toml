@@ -1,0 +1,33 @@
+# Fly.io app configuration for BuddySplit.
+# Replace `app = "buddysplit"` with your unique Fly app name after `fly launch`.
+
+app = "buddysplit"
+primary_region = "cdg"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+  DATA_DIR = "/data"
+
+[[mounts]]
+  source = "buddysplit_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
+
+# Secrets to set with `fly secrets set`:
+#   JWT_SECRET=<random hex>
