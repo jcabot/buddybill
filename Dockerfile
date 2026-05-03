@@ -19,6 +19,9 @@ COPY client ./client
 RUN npm run build
 
 # --- runtime -------------------------------------------------------------
+# npm workspaces hoist all deps to /app/node_modules and create a symlink at
+# /app/node_modules/@buddysplit/shared -> /app/shared, so we just copy the
+# root node_modules plus the built shared/server/client artefacts.
 FROM node:20-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
@@ -26,12 +29,12 @@ ENV PORT=8080
 ENV DATA_DIR=/data
 ENV CLIENT_DIST=/app/client/dist
 
-COPY --from=build /app/package.json ./
+COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/shared ./shared
-COPY --from=build /app/server/dist ./server/dist
+COPY --from=build /app/shared/package.json ./shared/package.json
+COPY --from=build /app/shared/dist ./shared/dist
 COPY --from=build /app/server/package.json ./server/package.json
-COPY --from=build /app/server/node_modules ./server/node_modules
+COPY --from=build /app/server/dist ./server/dist
 COPY --from=build /app/client/dist ./client/dist
 
 EXPOSE 8080
