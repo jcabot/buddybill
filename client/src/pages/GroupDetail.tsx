@@ -181,6 +181,7 @@ export function GroupDetailPage() {
           className="input"
           autoFocus
           placeholder="Name"
+          autoComplete="off"
           {...memberForm.register('name')}
         />
         {memberErr && <p className="text-danger text-sm mt-2">{memberErr}</p>}
