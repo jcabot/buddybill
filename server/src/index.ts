@@ -44,9 +44,12 @@ async function main(): Promise<void> {
 
   app.use(errorHandler);
 
-  app.listen(env.port, () => {
+  // Bind explicitly to 0.0.0.0 so Fly's health checks on the public IPv4
+  // address can reach us (Node otherwise binds to :: which is fine on most
+  // dual-stack hosts but has occasionally surprised Fly's prober).
+  app.listen(env.port, '0.0.0.0', () => {
     // eslint-disable-next-line no-console
-    console.log(`BuddySplit server listening on :${env.port} (env=${env.nodeEnv})`);
+    console.log(`BuddySplit server listening on 0.0.0.0:${env.port} (env=${env.nodeEnv})`);
   });
 }
 
