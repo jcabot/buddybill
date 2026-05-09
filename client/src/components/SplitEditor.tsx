@@ -103,6 +103,30 @@ export function SplitEditor({ members, amount, currency, value, onChange }: Prop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, currency]);
 
+  // Move one member's percentage to `newPct` and redistribute the rest so the
+  // total stays at exactly 100. Distribution is proportional to current other
+  // values; if they're all zero, split the pool equally.
+  const rebalancePercents = (id: string, newPct: number): Record<string, number> => {
+    const clamped = Math.max(0, Math.min(100, newPct));
+    const others = members.filter((m) => m.id !== id);
+    const next: Record<string, number> = { [id]: clamped };
+    if (others.length === 0) {
+      next[id] = 100;
+      return next;
+    }
+    const pool = 100 - clamped;
+    const othersSum = others.reduce((s, m) => s + (percents[m.id] ?? 0), 0);
+    if (othersSum > 1e-9) {
+      others.forEach((m) => {
+        next[m.id] = ((percents[m.id] ?? 0) / othersSum) * pool;
+      });
+    } else {
+      const each = pool / others.length;
+      others.forEach((m) => (next[m.id] = each));
+    }
+    return next;
+  };
+
   const percentSum = useMemo(
     () => members.reduce((s, m) => s + (percents[m.id] ?? 0), 0),
     [percents, members],
@@ -173,9 +197,25 @@ export function SplitEditor({ members, amount, currency, value, onChange }: Prop
             <li key={m.id} className="py-2 flex items-center justify-between gap-3">
               <span>{m.name}</span>
               {mode === 'percent' ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-1 min-w-0 ml-3">
                   <input
-                    className="input max-w-[5rem] text-right"
+                    type="range"
+                    min={0}
+                    max={100}
+                    step={0.1}
+                    value={Number.isFinite(pct) ? pct : 0}
+                    onChange={(e) => {
+                      const num = Number(e.target.value);
+                      const next = rebalancePercents(m.id, num);
+                      setPercents(next);
+                      setPercentDrafts({});
+                      onChange(amountsFromPercents(next));
+                    }}
+                    className="flex-1 min-w-0 accent-[var(--color-primary)]"
+                    aria-label={`${m.name} percentage`}
+                  />
+                  <input
+                    className="input max-w-[4.5rem] text-right"
                     inputMode="decimal"
                     value={pctDraft ?? (Number.isFinite(pct) ? pct.toFixed(2) : '0')}
                     onChange={(e) => {
@@ -188,13 +228,19 @@ export function SplitEditor({ members, amount, currency, value, onChange }: Prop
                         onChange(amountsFromPercents(next));
                       }
                     }}
-                    onBlur={() =>
+                    onBlur={(e) => {
                       setPercentDrafts((d) => {
-                        const next = { ...d };
-                        delete next[m.id];
-                        return next;
-                      })
-                    }
+                        const copy = { ...d };
+                        delete copy[m.id];
+                        return copy;
+                      });
+                      const num = Number(e.target.value.replace(',', '.'));
+                      if (Number.isFinite(num) && num >= 0) {
+                        const next = rebalancePercents(m.id, num);
+                        setPercents(next);
+                        onChange(amountsFromPercents(next));
+                      }
+                    }}
                   />
                   <span className="text-muted text-sm">%</span>
                   <span className="tabular-nums text-muted text-sm w-20 text-right">
