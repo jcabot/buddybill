@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import type { Activity } from '@buddysplit/shared';
 import { Button } from '../components/ui/Button.js';
 import { Money } from '../components/ui/Money.js';
 import { Modal } from '../components/ui/Modal.js';
@@ -19,6 +20,10 @@ import { ApiError } from '../api/client.js';
 
 const memberSchema = z.object({ name: z.string().trim().min(1).max(60) });
 const activitySchema = z.object({ name: z.string().trim().min(1).max(80) });
+
+function activitiesOpenFirst(activities: Activity[]): Activity[] {
+  return [...activities].sort((a, b) => Number(a.balanced) - Number(b.balanced));
+}
 
 export function GroupDetailPage() {
   const { gid = '' } = useParams<{ gid: string }>();
@@ -123,7 +128,7 @@ export function GroupDetailPage() {
           </p>
         ) : (
           <ul className="divide-y divide-border">
-            {g.activities.map((a) => (
+            {activitiesOpenFirst(g.activities).map((a) => (
               <li key={a.id} className="py-2">
                 <Link
                   to={`/groups/${gid}/activities/${a.id}`}
