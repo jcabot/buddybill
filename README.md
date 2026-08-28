@@ -9,6 +9,22 @@ activity) so it stays portable, inspectable, and exportable at any time. An
 exported file can be re-imported into another BuddySplit deployment for
 migration.
 
+## How it works
+
+Create groups for trips or shared households:
+
+![BuddySplit dashboard with example groups](docs/screenshots/dashboard.webp)
+
+See who is owed money, who needs to pay, and which activities are still open:
+
+![Example group with balances, members, and activities](docs/screenshots/group-overview.webp)
+
+Open an activity to review its balance and individual invoices:
+
+![Example activity showing balances and invoices](docs/screenshots/activity-detail.webp)
+
+All names, trips, and amounts shown above are fictional sample data.
+
 ## Stack
 
 - **Frontend**: React + Vite + TypeScript, configured as a PWA via `vite-plugin-pwa`
