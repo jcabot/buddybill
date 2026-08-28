@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 RUN apk add --no-cache python3 make g++
 WORKDIR /app
 
@@ -22,7 +22,7 @@ RUN npm run build
 # npm workspaces hoist all deps to /app/node_modules and create a symlink at
 # /app/node_modules/@buddysplit/shared -> /app/shared, so we just copy the
 # root node_modules plus the built shared/server/client artefacts.
-FROM node:20-alpine AS runtime
+FROM node:24-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8080
