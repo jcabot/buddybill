@@ -79,7 +79,7 @@ export function ActivityDetailPage() {
           {balance.members.map((m) => (
             <li key={m.memberId} className="py-2 flex justify-between">
               <span>{m.memberName}</span>
-              <Money amount={m.net} currency={currency} signed />
+              <Money amount={m.net} currency={currency} signed memberName={m.memberName} />
             </li>
           ))}
         </ul>

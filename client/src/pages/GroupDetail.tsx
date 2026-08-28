@@ -70,7 +70,7 @@ export function GroupDetailPage() {
             {balance.data.totals.map((m) => (
               <li key={m.memberId} className="py-2 flex justify-between">
                 <span>{m.memberName}</span>
-                <Money amount={m.net} currency={g.currency} signed />
+                <Money amount={m.net} currency={g.currency} signed memberName={m.memberName} />
               </li>
             ))}
           </ul>
