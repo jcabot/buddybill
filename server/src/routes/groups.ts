@@ -5,6 +5,7 @@ import * as XLSX from 'xlsx';
 import {
   SCHEMA_VERSION,
   createGroupSchema,
+  latestInvoiceDate,
   renameGroupSchema,
 } from '@buddysplit/shared';
 import { authRequired } from '../middleware/auth.js';
@@ -97,7 +98,10 @@ groupsRouter.get(
         currency: snap.meta.currency,
         createdAt: snap.meta.createdAt,
         members: snap.members,
-        activities: snap.activities,
+        activities: snap.activities.map((a) => ({
+          ...a,
+          latestInvoiceDate: latestInvoiceDate(snap.invoicesByActivity[a.id] ?? []),
+        })),
       },
     });
   }),

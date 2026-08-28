@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   Activity,
   ActivityBalance,
+  ActivityListItem,
   Currency,
   GroupBalance,
   Invoice,
@@ -27,7 +28,7 @@ export interface GroupDetail {
   currency: Currency;
   createdAt: string;
   members: Member[];
-  activities: Activity[];
+  activities: ActivityListItem[];
 }
 
 export interface ActivityDetailPayload {
@@ -277,6 +278,7 @@ export function useCreateInvoice(gid: string, aid: string) {
       ),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.activity(gid, aid) });
+      qc.invalidateQueries({ queryKey: queryKeys.group(gid) });
       qc.invalidateQueries({ queryKey: queryKeys.groupBalance(gid) });
     },
   });
@@ -292,6 +294,7 @@ export function useUpdateInvoice(gid: string, aid: string) {
       ),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.activity(gid, aid) });
+      qc.invalidateQueries({ queryKey: queryKeys.group(gid) });
       qc.invalidateQueries({ queryKey: queryKeys.groupBalance(gid) });
     },
   });
@@ -307,6 +310,7 @@ export function useDeleteInvoice(gid: string, aid: string) {
       ),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.activity(gid, aid) });
+      qc.invalidateQueries({ queryKey: queryKeys.group(gid) });
       qc.invalidateQueries({ queryKey: queryKeys.groupBalance(gid) });
     },
   });
